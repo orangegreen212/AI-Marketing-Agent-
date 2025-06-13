@@ -2,10 +2,10 @@
 import os
 
 import streamlit as st
-import openai
+import mistralai
 
 # Правильний спосіб для Streamlit Cloud
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+mistralai.api_key = st.secrets["MISTRAL_API_KEY"]
 
 PROMPT_TEMPLATE = """
 Ти — досвідчений маркетолог та талановитий копірайтер нашого інтернет-магазину косметики та парфумерії. Твоє завдання — згенерувати персоналізований, теплий та дружній email для нашого клієнта. Уникай кліше та занадто "роботизованих" фраз.
