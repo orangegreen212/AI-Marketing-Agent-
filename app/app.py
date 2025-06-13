@@ -95,9 +95,6 @@ if submitted:
 # -----------------------------------------------------------------------------
 from pyngrok import ngrok
 
-# Запускаємо streamlit у фоновому режимі. '&' в кінці робить його фоновим процесом.
-!streamlit run app.py &
-
 # Відкриваємо тунель на порт 8501, на якому працює streamlit
 public_url = ngrok.connect(8501)
 print(f'Ваш Streamlit додаток доступний за посиланням: {public_url}')
