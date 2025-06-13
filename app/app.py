@@ -1,11 +1,11 @@
-import streamlit as st
-import openai
+
 import os
 
-from dotenv import load_dotenv, find_dotenv
-_ = load_dotenv(find_dotenv())
+import streamlit as st
+import openai
 
-openai.api_key  = os.getenv('sk-V-HiFqEMbJ6g5rhgYvq6WzKeCA3FLYtl4cwgQaK4OgT3BlbkFJAtMnSujhxdYEPKhGLTxnQbeQecsvDbBXlukvwt09wA')
+# Правильний спосіб для Streamlit Cloud
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 PROMPT_TEMPLATE = """
 Ти — досвідчений маркетолог та талановитий копірайтер нашого інтернет-магазину косметики та парфумерії. Твоє завдання — згенерувати персоналізований, теплий та дружній email для нашого клієнта. Уникай кліше та занадто "роботизованих" фраз.
