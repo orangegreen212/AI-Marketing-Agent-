@@ -45,7 +45,7 @@ def generate_email_chatgpt(customer_data):
     filled_prompt = PROMPT_TEMPLATE.format(**customer_data)
     
     try:
-        response = openai.chat.completions.create(
+        response = mistralai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Ти — копірайтер-маркетолог для магазину косметики."},
