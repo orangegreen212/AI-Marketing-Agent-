@@ -75,10 +75,10 @@ Built with  **Mistral** (via `mistralai`), this assistant can:
 You can test the project in Streamlit here:
 
 🔗 **App Version 1 (English version):**  
-[[https://streamlit-demo.com](https://streamlit-demo-link1.com](https://92ojbikbpkzxyjzjcymybp.streamlit.app/))
+[https://streamlit-demo.com](https://92ojbikbpkzxyjzjcymybp.streamlit.app/)]
 
 🔗 **App Version 2 (Ukrainian version):**  
-[[https://streamlit-demo.com](https://streamlit-demo-link2.com](https://vsfn4vshmfdnzcc27mvtzb.streamlit.app/))
+[https://streamlit-demo.com]([https://streamlit-demo-link2.com](https://vsfn4vshmfdnzcc27mvtzb.streamlit.app)]
 
 ---
 
