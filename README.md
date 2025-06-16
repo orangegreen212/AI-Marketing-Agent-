@@ -30,7 +30,7 @@ Track user progression through the sales funnel:
 Two segmentation approaches are implemented to provide a deeper understanding of customer behavior:
 
 - **RFM Analysis**:
-  - Segments customers based on Recency, Frequency, and Monetary value.
+  - Segments customers based on Recency, Frequency, and Monetary value. Also using unsupervised learning K-Means
   - Clusters include: *New/Occasional Users*, *Loyal Customers*, *Champions*, *Promising / Potential Loyalists*, *Lost* and *At Risk*
 
 - **Behavioral Clustering**:
