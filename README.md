@@ -94,8 +94,7 @@ pip install -r requirements.txt
 
     Run the app:
 
-streamlit run app/app_english.py '''
-----
+streamlit run app/app_english.py   ```
 
 ## 💬 Sample AI Prompts
 
