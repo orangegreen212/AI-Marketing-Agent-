@@ -25,7 +25,7 @@ Track user progression through the sales funnel:
 - Product View → Add to Cart → Purchase
 - Built with Plotly for interactive exploration.
 - Helps identify drop-off stages and conversion efficiency.
-
+![Альтернативный текст](pic/screenshot.png)
 ### 2. Dual Segmentation Engine
 Two segmentation approaches are implemented to provide a deeper understanding of customer behavior:
 
