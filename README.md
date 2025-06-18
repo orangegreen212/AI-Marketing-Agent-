@@ -75,10 +75,10 @@ Built with  **Mistral** (via `mistralai`), this assistant can:
 You can test the project in Streamlit here:
 
 🔗 **App Version 1 (English version):**  
-[https://streamlit-demo.com](https://92ojbikbpkzxyjzjcymybp.streamlit.app/)]
+[streamlit-link-English](https://92ojbikbpkzxyjzjcymybp.streamlit.app/)
 
 🔗 **App Version 2 (Ukrainian version):**  
-[https://streamlit-demo.com]([https://streamlit-demo-link2.com](https://vsfn4vshmfdnzcc27mvtzb.streamlit.app)]
+[[streamlit-link-Ukrainian]](https://streamlit-demo-link2.com](https://vsfn4vshmfdnzcc27mvtzb.streamlit.app)
 
 ---
 
@@ -96,7 +96,7 @@ pip install -r requirements.txt
 
 streamlit run app/app_english.py
 
-💬 Sample AI Prompts
+##💬 Sample AI Prompts
 
 You can ask the AI agent questions like:
 
@@ -108,7 +108,7 @@ You can ask the AI agent questions like:
 
     "How can I re-engage occasional buyers?"
 
-📈 Project Outcomes
+## 📈 Project Outcomes
 
     Built an end-to-end analytics workflow: from raw event logs to business insights.
 
@@ -118,7 +118,7 @@ You can ask the AI agent questions like:
 
     Delivered a full Streamlit interface suitable for both analysts and marketers.
 
-📌 Future Improvements
+##📌 Future Improvements
 
     Fine-tune Mistral or test with GPT-4 for richer outputs.
 
@@ -128,7 +128,7 @@ You can ask the AI agent questions like:
 
     Expand funnel tracking with attribution modeling.
 
-👩‍💻 Author
+##👩‍💻 Author
 
 Olha (orangegreen212)
 Junior Data Analyst | Passionate about AI & Marketing Analytics
