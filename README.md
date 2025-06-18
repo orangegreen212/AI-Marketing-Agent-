@@ -87,48 +87,49 @@ You can test the project in Streamlit here:
 1. Clone the repository:
 ```bash
 git clone https://github.com/orangegreen212/AI-Marketing-Agent-.git
+```
 
-    Install dependencies:
+2. Install dependencies:
 
-pip install -r requirements.txt
+  ```bash
+  pip install -r requirements.txt
+  ```
+3. Run the app:
+   
+```bash
+streamlit run app/app_english.py
+ ```
 
-    Run the app:
-
-streamlit run app/app_english.py   ```
-
-## 💬 Sample AI Prompts
+## 💬 Sample AI Prompts:
 
 You can ask the AI agent questions like:
 
-    "Create a campaign idea for VIP users."
+"Create a campaign idea for VIP users."
 
-    "What do churned users usually do before leaving?"
+"What do churned users usually do before leaving?"
 
-    "Suggest a cross-sell product for someone who purchased a serum."
+"Suggest a cross-sell product for someone who purchased a serum."
 
-    "How can I re-engage occasional buyers?"
+"How can I re-engage occasional buyers?"
 
-## 📈 Project Outcomes
+##  📈 Project Outcomes:
 
-    Built an end-to-end analytics workflow: from raw event logs to business insights.
+- Built an end-to-end analytics workflow: from raw event logs to business insights.
 
-    Implemented two customer segmentation strategies for flexible targeting.
+- Implemented two customer segmentation strategies for flexible targeting.
 
-    Developed a conversational AI agent to support campaign ideation.
+- Developed a conversational AI agent to support campaign ideation.
 
-    Delivered a full Streamlit interface suitable for both analysts and marketers.
+- Delivered a full Streamlit interface suitable for both analysts and marketers.
 
-##📌 Future Improvements
+## 📌 Future Improvements
 
-    Fine-tune Mistral or test with GPT-4 for richer outputs.
+- Fine-tune Mistral or test with GPT-4 for richer outputs.
+- Enable real-time data upload (CSV/Google Sheets integration).
+- Add ability to save campaign drafts.
+- Expand funnel tracking with attribution modeling.
 
-    Enable real-time data upload (CSV/Google Sheets integration).
-
-    Add ability to save campaign drafts.
-
-    Expand funnel tracking with attribution modeling.
-
-##👩‍💻 Author
+## 👩‍💻 Author
 
 Olha (orangegreen212)
 Junior Data Analyst | Passionate about AI & Marketing Analytics
