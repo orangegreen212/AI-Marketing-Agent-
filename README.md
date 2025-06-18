@@ -78,7 +78,7 @@ You can test the project in Streamlit here:
 [streamlit-link-English](https://92ojbikbpkzxyjzjcymybp.streamlit.app/)
 
 🔗 **App Version 2 (Ukrainian version):**  
-[[streamlit-link-Ukrainian]](https://streamlit-demo-link2.com](https://vsfn4vshmfdnzcc27mvtzb.streamlit.app)
+[streamlit-link-Ukrainian](https://vsfn4vshmfdnzcc27mvtzb.streamlit.app)
 
 ---
 
