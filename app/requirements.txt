@@ -1,2 +1,5 @@
 streamlit
 mistralai==0.3.0
+pandas
+numpy
+plotly
