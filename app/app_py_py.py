@@ -32,17 +32,18 @@ def load_data():
 
 df = load_data()
 
+# Приводим названия Behavioral Segment к нижнему регистру
+df['Behavioral_Segment'] = df['Behavioral_Segment'].str.lower()
+
 # === Filters ===
 st.sidebar.header("🔍 Filters")
-segment = st.sidebar.selectbox("Behavioral Segment", ["All"] + sorted(df['Behavioral_Segment'].dropna().unique().tolist()))
-customer_type = st.sidebar.selectbox("Customer Type", ["All"] + sorted(df['customer_type'].dropna().unique().tolist()))
+segment_options = ["All"] + sorted(df['Behavioral_Segment'].dropna().unique().tolist())
+segment = st.sidebar.selectbox("Behavioral Segment", segment_options)
 
 # === Data Filtering ===
 filtered_df = df.copy()
 if segment != "All":
     filtered_df = filtered_df[filtered_df['Behavioral_Segment'] == segment]
-if customer_type != "All":
-    filtered_df = filtered_df[filtered_df['customer_type'] == customer_type]
 
 # === Tabs ===
 tab1, tab2 = st.tabs(["📊 Overview", "🧠 AI Recommendations"])
@@ -51,7 +52,7 @@ tab1, tab2 = st.tabs(["📊 Overview", "🧠 AI Recommendations"])
 with tab1:
     col1, col2, col3 = st.columns(3)
     col1.metric("👥 Users", f"{len(filtered_df):,}")
-    col2.metric("📈 Avg Activity", f"{filtered_df['probability'].mean():.2f}")
+    col2.metric("📈 Avg Probability", f"{filtered_df['probability'].mean():.2f}")
     col3.metric("❌ Churn Rate", f"{1 - filtered_df['actual_activity'].mean():.2%}")
 
     st.subheader("📈 Probability Distribution")
@@ -79,7 +80,7 @@ with tab2:
     if segment == "All":
         st.info("Please select a specific Behavioral Segment to generate recommendations.")
     else:
-        st.success(f"Segment selected: **{segment}**")
+        st.success(f"Segment selected: **{segment.title()}**")
 
         insights = {
             "promising / active shoppers": [
@@ -102,14 +103,15 @@ with tab2:
                 "📣 Invite them to exclusive, members-only sales.",
                 "🤝 Conduct a satisfaction survey to show you care."
             ],
-            "Champions / VIP": [
+            "champions / vip": [
                 "👑 Provide personal offers and exclusive concierge service.",
                 "🎉 Invite them to private events or product previews.",
                 "💎 Implement a VIP bonus and rewards program."
             ]
         }
 
-        for tip in insights.get(segment.lower(), ["❓ No recommendations available for the selected segment."]):
+        tips = insights.get(segment, ["❓ No recommendations available for the selected segment."])
+        for tip in tips:
             st.markdown(f"- {tip}")
 
         st.markdown("---")
