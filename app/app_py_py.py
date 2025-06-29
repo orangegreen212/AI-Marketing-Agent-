@@ -27,44 +27,40 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
 # === HEADER ===
 st.markdown("<h1 style='text-align: center; color: #3F8CFF;'>📉 Customer Retention & Churn Dashboard</h1>", unsafe_allow_html=True)
 
-
-# === Data Loading from Google Drive (if the file is shared publicly) ===
+# === Data Loading ===
 csv_url = "https://drive.google.com/uc?id=1cCxHQriyEPCPcZ35gcuxpJRUSU7mKopI"
 
 @st.cache_data
 def load_data():
     return pd.read_csv(csv_url)
 
-
 df = load_data()
-
-# === Overall Statistics ===
-st.subheader("📊 Overview")
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("👥 Users", f"{len(df):,}")
-col2.metric("📈 Avg Activity", f"{df['predicted_activity_proba'].mean():.2f}")
-col3.metric("❌ Churn Rate", f"{1 - df['predicted_activity_binary'].mean():.2%}")
-col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_last_3M'].sum():,.2f}")
-
 
 # === Filters ===
 st.sidebar.header("🔍 Filters")
 segment = st.sidebar.selectbox("Behavioral Segment", ["All"] + sorted(df['Behavioral_Segment'].dropna().unique().tolist()))
 customer_type = st.sidebar.selectbox("Customer Type", ["All"] + sorted(df['customer_type'].dropna().unique().tolist()))
 
-    col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_last_3M'].sum():,.2f}")
+# === Data Filtering ===
+filtered_df = df.copy()
+if segment != "All":
+    filtered_df = filtered_df[filtered_df['Behavioral_Segment'] == segment]
+if customer_type != "All":
+    filtered_df = filtered_df[filtered_df['customer_type'] == customer_type]
 
-# ========== Tab 1: Overview ==========
+# === Tabs ===
+tab1, tab2 = st.tabs(["📊 Overview", "🧠 AI Recommendations"])
+
+# --- Tab 1: Overview ---
 with tab1:
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("👥 Users", f"{len(filtered_df):,}")
     col2.metric("📈 Avg Activity", f"{filtered_df['predicted_activity_proba'].mean():.2f}")
     col3.metric("❌ Churn Rate", f"{1 - filtered_df['predicted_activity_binary'].mean():.2%}")
-    col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_3M'].sum():,.2f}")
+    col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_last_3M'].sum():,.2f}")
 
     st.subheader("📈 Distribution of Predicted Activity")
     fig1 = px.histogram(filtered_df, 
@@ -84,7 +80,7 @@ with tab1:
     fig2 = px.bar(seg_chart, x="Behavioral_Segment", y="Retention Rate", color="Behavioral_Segment")
     st.plotly_chart(fig2, use_container_width=True)
 
-# ========== Tab 2: AI Recommendations ==========
+# --- Tab 2: AI Recommendations ---
 with tab2:
     st.markdown("### 🧠 AI Agent Recommendations")
 
@@ -93,7 +89,6 @@ with tab2:
     else:
         st.success(f"Segment selected: **{segment}**")
 
-        # 🔮 Пример рекомендательной логики:
         insights = {
             "promising / active shoppers": [
                 "👉 Отправьте им email с персональными скидками.",
