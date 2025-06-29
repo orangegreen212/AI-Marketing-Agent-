@@ -18,10 +18,12 @@ import plotly.express as px
 st.title("📉 Customer Retention & Churn Dashboard")
 
 # === Data Loading from Google Drive (if the file is shared publicly) ===
-csv_url = "https://drive.google.com/file/d/1cCxHQriyEPCPcZ35gcuxpJRUSU7mKopI/view?usp=sharing"
+csv_url = "https://drive.google.com/uc?id=1cCxHQriyEPCPcZ35gcuxpJRUSU7mKopI"
+
 @st.cache_data
 def load_data():
     return pd.read_csv(csv_url)
+
 
 df = load_data()
 
