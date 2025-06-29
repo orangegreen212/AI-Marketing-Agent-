@@ -2,33 +2,32 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# --- Custom CSS ---
+st.set_page_config(layout="wide")
+
 st.markdown("""
     <style>
-        .main { background-color: #f9f9f9; }
-        h1 { color: #3F8CFF; }
+        h1 { color: #3F8CFF; text-align: center; }
         .stMetricValue { color: #1a1a1a; font-weight: bold; }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center; color: #3F8CFF;'>📉 Customer Retention & Churn Dashboard</h1>", unsafe_allow_html=True)
+st.markdown("## 📉 Customer Retention & Churn Dashboard")
 
-# --- Load Data ---
 @st.cache_data
 def load_data():
-    pred_url = "https://drive.google.com/uc?id=1LGdi__hMVNflhyTf3ZhzGgYJwt0_o4MD"
+    predictions_url = "https://drive.google.com/uc?id=1LGdi__hMVNflhyTf3ZhzGgYJwt0_o4MD"
     total_url = "https://drive.google.com/uc?id=1cCxHQriyEPCPcZ35gcuxpJRUSU7mKopI"
-    pred_df = pd.read_csv(pred_url)
+    pred_df = pd.read_csv(predictions_url)
     total_df = pd.read_csv(total_url)
-    merged = pd.merge(pred_df, total_df, on="user_id", how="left")
-    return merged
+    df = pd.merge(pred_df, total_df, on="user_id", how="left")
+    return df
 
 df = load_data()
 
 # --- Sidebar Filters ---
 st.sidebar.header("🔍 Filters")
-segment = st.sidebar.selectbox("Behavioral Segment", ["All"] + sorted(df['Behavioral_Segment'].dropna().unique().tolist()))
-customer_type = st.sidebar.selectbox("Customer Type", ["All"] + sorted(df['customer_type'].dropna().unique().tolist()))
+segment = st.sidebar.selectbox("Behavioral Segment", ["All"] + sorted(df['Behavioral_Segment'].dropna().unique()))
+customer_type = st.sidebar.selectbox("Customer Type", ["All"] + sorted(df['customer_type'].dropna().unique()))
 
 filtered_df = df.copy()
 if segment != "All":
@@ -36,32 +35,34 @@ if segment != "All":
 if customer_type != "All":
     filtered_df = filtered_df[filtered_df['customer_type'] == customer_type]
 
-# --- Tabs ---
+# === Tabs ===
 tab1, tab2 = st.tabs(["📊 Overview", "🧠 AI Recommendations"])
 
-# --- Tab 1: Overview ---
+# --- Tab 1 ---
 with tab1:
     col1, col2, col3 = st.columns(3)
     col1.metric("👥 Users", f"{len(filtered_df):,}")
-    col2.metric("📈 Avg Retention Probability", f"{filtered_df['probability'].mean():.2f}")
+    col2.metric("📈 Avg Probability", f"{filtered_df['probability'].mean():.2f}")
     churn_rate = 1 - filtered_df["actual_activity"].mean()
     col3.metric("❌ Churn Rate", f"{churn_rate:.2%}")
 
     st.subheader("📈 Probability Distribution")
-    fig1 = px.histogram(filtered_df, x="probability", color="predicted_status",
-                        color_discrete_map={"Churn": "red", "Retention": "green"},
-                        nbins=30, barmode="overlay")
+    fig1 = px.histogram(
+        filtered_df, x="probability", color="predicted_status",
+        nbins=30, barmode="overlay",
+        color_discrete_map={"Churn": "red", "Retention": "green"}
+    )
     st.plotly_chart(fig1, use_container_width=True)
 
     st.subheader("📌 Retention Rate by Behavioral Segment")
-    chart_data = (
+    seg_chart = (
         filtered_df.groupby("Behavioral_Segment")["actual_activity"]
         .mean().reset_index().rename(columns={"actual_activity": "Retention Rate"})
     )
-    fig2 = px.bar(chart_data, x="Behavioral_Segment", y="Retention Rate", color="Behavioral_Segment")
+    fig2 = px.bar(seg_chart, x="Behavioral_Segment", y="Retention Rate", color="Behavioral_Segment")
     st.plotly_chart(fig2, use_container_width=True)
 
-# --- Tab 2: AI Recommendations ---
+# --- Tab 2 ---
 with tab2:
     st.markdown("### 🧠 AI Agent Recommendations")
 
@@ -72,36 +73,35 @@ with tab2:
 
         insights = {
             "promising / active shoppers": [
-                "👉 Send them an email with personalized discounts.",
-                "✅ Offer a loyalty program.",
+                "👉 Send personalized discounts via email.",
+                "✅ Invite to loyalty program.",
                 "🧲 Use social media retargeting."
             ],
             "newcomers / casual visitors": [
-                "📢 Run a welcome campaign with bonuses.",
-                "🔍 Help with onboarding (FAQ, tips).",
-                "📬 Remind about incomplete actions (cart, viewed items)."
+                "📢 Welcome campaign with bonuses.",
+                "🔍 Tips, onboarding, and FAQs.",
+                "📬 Reminders for incomplete actions."
             ],
             "at risk": [
-                "🔥 Send a 'one-day-only' offer.",
-                "🕵️ Review your communication channels.",
-                "📉 Check their last activity and offer a bonus."
+                "🔥 'Only today' limited-time offer.",
+                "🕵️ Check communication channel freshness.",
+                "📉 Offer based on last activity date."
             ],
             "can't lose them": [
-                "🎁 Give a loyalty gift or bonus level-up.",
-                "📣 Private sales access.",
-                "🤝 Satisfaction survey to show care."
+                "🎁 Reward or status upgrade.",
+                "📣 Private sale invitations.",
+                "🤝 Satisfaction survey."
             ],
             "Champions / VIP": [
                 "👑 Exclusive offers and service.",
-                "🎉 Invite to private events.",
+                "🎉 Access to private events.",
                 "💎 VIP bonuses and rewards."
             ]
         }
 
-        for tip in insights.get(segment.lower(), ["❓ No recommendations for selected segment."]):
+        for tip in insights.get(segment.lower(), ["❓ No recommendations found."]):
             st.markdown(f"- {tip}")
 
         st.markdown("---")
         st.markdown("📬 **Want to launch a full email campaign?**")
         st.markdown("[➡️ Go to Email Generator App](https://92ojbikbpkzxyjzjcymybp.streamlit.app/)")
-
