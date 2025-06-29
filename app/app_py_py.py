@@ -63,8 +63,8 @@ with tab1:
     col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_last_3M'].sum():,.2f}")
 
     st.subheader("📈 Distribution of Predicted Activity")
-    fig1 = px.histogram(filtered_df, 
-                        x="predicted_activity_proba", 
+    fig1 = px.histogram(filtered_df,
+                        x="predicted_activity_proba",
                         color="predicted_activity_binary",
                         color_discrete_map={1: "green", 0: "red"},
                         nbins=30,
@@ -91,36 +91,35 @@ with tab2:
 
         insights = {
             "promising / active shoppers": [
-                "👉 Отправьте им email с персональными скидками.",
-                "✅ Предложите программу лояльности.",
-                "🧲 Используйте ретаргетинг в соцсетях."
+                "👉 Send them an email with personalized discounts.",
+                "✅ Offer them a loyalty program.",
+                "🧲 Use social media retargeting."
             ],
             "newcomers / casual visitors": [
-                "📢 Проведите welcome-кампанию с бонусами.",
-                "🔍 Поддержите онбординг с подсказками и FAQ.",
-                "📬 Напомните им о незавершённых действиях (корзина, просмотр)."
+                "📢 Launch a welcome campaign with bonuses.",
+                "🔍 Support their onboarding with tips and an FAQ.",
+                "📬 Remind them about incomplete actions (e.g., abandoned cart, viewed items)."
             ],
             "at risk": [
-                "🔥 Отправьте специальное предложение 'только сегодня'.",
-                "🕵️ Проверьте каналы взаимодействия — возможно, они устарели.",
-                "📉 Посмотрите, когда они последний раз были активны, и предложите бонус."
+                "🔥 Send a special 'today only' offer to create urgency.",
+                "🕵️ Review your communication channels – they might be outdated.",
+                "📉 Check when they were last active and offer a reactivation bonus."
             ],
             "can't lose them": [
-                "🎁 Подарок за лояльность или повышение уровня.",
-                "📣 Участвуйте с ними в закрытых распродажах.",
-                "🤝 Сделайте опрос удовлетворённости — покажите заботу."
+                "🎁 Give a gift for loyalty or a level-up bonus.",
+                "📣 Invite them to exclusive, members-only sales.",
+                "🤝 Conduct a satisfaction survey to show you care."
             ],
             "Champions / VIP": [
-                "👑 Персональные предложения и эксклюзивный сервис.",
-                "🎉 Приглашение на закрытые мероприятия.",
-                "💎 Программа VIP-бонусов и премий."
+                "👑 Provide personal offers and exclusive concierge service.",
+                "🎉 Invite them to private events or product previews.",
+                "💎 Implement a VIP bonus and rewards program."
             ]
         }
 
-        for tip in insights.get(segment, ["❓ Нет рекомендаций для выбранного сегмента."]):
+        for tip in insights.get(segment, ["❓ No recommendations available for the selected segment."]):
             st.markdown(f"- {tip}")
 
         st.markdown("---")
         st.markdown("📬 **Want to launch a full email campaign?**")
-        st.markdown("[➡️ Go to Email Generator App](https://your-streamlit-email-app-link)")
-
+        st.markdown("[➡️ Go to Email Generator App](https://92ojbikbpkzxyjzjcymybp.streamlit.app/)")
