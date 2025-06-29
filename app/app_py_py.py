@@ -56,15 +56,6 @@ st.sidebar.header("🔍 Filters")
 segment = st.sidebar.selectbox("Behavioral Segment", ["All"] + sorted(df['Behavioral_Segment'].dropna().unique().tolist()))
 customer_type = st.sidebar.selectbox("Customer Type", ["All"] + sorted(df['customer_type'].dropna().unique().tolist()))
 
-filtered_df = df.copy()
-if segment != "All":
-    filtered_df = filtered_df[filtered_df['Behavioral_Segment'] == segment]
-if customer_type != "All":
-    filtered_df = filtered_df[filtered_df['customer_type'] == customer_type]
-
-# --- вкладка 1 ---
-with tab1:
-    col1, col2, col3, col4 = st.columns(4)
     col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_last_3M'].sum():,.2f}")
 
 # ========== Tab 1: Overview ==========
