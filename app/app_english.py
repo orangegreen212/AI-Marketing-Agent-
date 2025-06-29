@@ -60,7 +60,8 @@ if not API_KEY_CONFIGURED:
     st.error("Mistral API key is not configured! Please add MISTRAL_API_KEY to your Streamlit secrets.")
 else:
     # ✅ Replace file upload with auto Google Drive fetch
-    csv_url = "https://drive.google.com/uc?id=1LGdi__hMVNflhyTf3ZhzGgYJwt0_o4MD"
+    csv_url = "https://drive.google.com/uc?id=1M5vanzfacy_P_WaYXOj7UGTjdjBsRqNq"
+
     @st.cache_data
     def load_data():
         return pd.read_csv(csv_url)
