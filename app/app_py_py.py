@@ -62,8 +62,10 @@ if segment != "All":
 if customer_type != "All":
     filtered_df = filtered_df[filtered_df['customer_type'] == customer_type]
 
-# ========== Tabs ==========
-tab1, tab2 = st.tabs(["📊 Overview", "🧠 AI Recommendations"])
+# --- вкладка 1 ---
+with tab1:
+    col1, col2, col3, col4 = st.columns(4)
+    col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_last_3M'].sum():,.2f}")
 
 # ========== Tab 1: Overview ==========
 with tab1:
