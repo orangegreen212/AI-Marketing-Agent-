@@ -89,8 +89,7 @@ with tab2:
     else:
         st.success(f"Segment selected: **{segment}**")
 
-       insights = {
-    "promising / active shoppers": [
+       insights =  "promising / active shoppers": [
         "👉 Отправьте им email с персональными скидками.",
         "✅ Предложите программу лояльности.",
         "🧲 Используйте ретаргетинг в соцсетях."
