@@ -27,9 +27,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ========== Заголовок ==========
-st.markdown("<h1 style='text-align: center;'>📉 Customer Retention & Churn Dashboard</h1>", unsafe_allow_html=True)
-
 
 # === HEADER ===
 st.markdown("<h1 style='text-align: center; color: #3F8CFF;'>📉 Customer Retention & Churn Dashboard</h1>", unsafe_allow_html=True)
@@ -51,7 +48,7 @@ col1, col2, col3, col4 = st.columns(4)
 col1.metric("👥 Users", f"{len(df):,}")
 col2.metric("📈 Avg Activity", f"{df['predicted_activity_proba'].mean():.2f}")
 col3.metric("❌ Churn Rate", f"{1 - df['predicted_activity_binary'].mean():.2%}")
-col4.metric("💸 Total Spend", f"${df['total_spend_sum_3M'].sum():,.2f}")
+col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_last_3M'].sum():,.2f}")
 
 
 # === Filters ===
