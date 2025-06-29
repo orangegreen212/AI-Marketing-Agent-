@@ -3,8 +3,7 @@ import pandas as pd
 from mistralai.client import MistralClient
 from mistralai.models.chat_completion import ChatMessage
 
-# --- CONFIGURATION AND FUNCTIONS ---
-
+# --- CONFIGURATION ---
 PROMPT_TEMPLATE = """
 You are an experienced marketer and a talented copywriter for our cosmetics and perfumery online store. Your task is to generate a personalized, warm, and friendly email for our customer. Avoid clichés and overly "robotic" phrases.
 
@@ -39,7 +38,7 @@ Generate the text for an email recommending a new product with a personal discou
     *   **Closing:** Friendly and warm.
 """
 
-# Initialize Mistral Client
+# --- API INIT ---
 try:
     client = MistralClient(api_key=st.secrets["MISTRAL_API_KEY"])
     API_KEY_CONFIGURED = True
@@ -53,35 +52,32 @@ def generate_email_mistral(_client, customer_data, model_name="mistral-small-lat
     chat_response = _client.chat(model=model_name, messages=messages, temperature=0.7)
     return chat_response.choices[0].message.content
 
-# --- NEW STREAMLIT INTERFACE FOR BULK GENERATION ---
-
+# --- PAGE CONFIG ---
 st.set_page_config(layout="wide")
 st.title("🚀 Segment-Based Personalized Email Generator")
 
 if not API_KEY_CONFIGURED:
     st.error("Mistral API key is not configured! Please add MISTRAL_API_KEY to your Streamlit secrets.")
 else:
-    uploaded_file = st.file_uploader(
-        "1. Upload your master file with segments (master_customer_profiles.csv)",
-        type="csv"
-    )
+    # ✅ Replace file upload with auto Google Drive fetch
+    csv_url = "https://drive.google.com/uc?id=1LGdi__hMVNflhyTf3ZhzGgYJwt0_o4MD"
+    @st.cache_data
+    def load_data():
+        return pd.read_csv(csv_url)
 
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        # Remove bots and anomalies
+    try:
+        df = load_data()
         df = df[~df['Behavioral_Segment'].str.contains("Bot|Anomaly", na=False)]
-
-        st.success(f"File successfully uploaded! Found {len(df)} real customers.")
+        st.success(f"✅ Dataset loaded successfully. Found {len(df)} real users.")
 
         col1, col2 = st.columns(2)
 
         with col1:
-            st.header("2. Select Target Audience")
-            # Select segments for the campaign
+            st.header("1. Select Target Audience")
             rfm_segments_to_target = st.multiselect(
                 "Select RFM segments:",
                 options=df['RFM_Segment'].unique(),
-                default=df['RFM_Segment'].unique()[0] # Select the first one by default
+                default=df['RFM_Segment'].unique()[0]
             )
             behavioral_segments_to_target = st.multiselect(
                 "Select Behavioral segments:",
@@ -89,34 +85,29 @@ else:
                 default=df['Behavioral_Segment'].unique()[0]
             )
 
-            # Filter users
             target_users = df[
                 df['RFM_Segment'].isin(rfm_segments_to_target) &
                 df['Behavioral_Segment'].isin(behavioral_segments_to_target)
             ]
-            st.write(f"Found **{len(target_users)}** users for the campaign.")
+            st.write(f"🎯 Found **{len(target_users)}** users for the campaign.")
 
         with col2:
-            st.header("3. Configure Campaign Parameters")
+            st.header("2. Configure Campaign Parameters")
             new_product_name = st.text_input("Product Name to Recommend", "Serum 'Magic Glow'")
             discount_amount = st.text_input("Discount Amount", "15%")
             promo_code = st.text_input("Promo Code", "MAGIC15")
 
         if st.button(f"🚀 Generate emails for {len(target_users)} users"):
-            st.subheader("Generated Emails (showing first 5):")
-
-            # Limit the number for demonstration
+            st.subheader("📧 Generated Emails (showing first 5):")
             users_to_process = target_users.head(5)
 
             for _, user_profile in users_to_process.iterrows():
                 with st.spinner(f"Generating email for user_id: {user_profile['user_id']}..."):
-                    # Collect data for the prompt from the DataFrame row
                     customer_data = {
                         "rfm_segment": user_profile["RFM_Segment"],
                         "behavioral_segment": user_profile["Behavioral_Segment"],
                         "monetary_value": user_profile["Monetary"],
                         "customer_name": f"customer {user_profile['user_id']}",
-                        "interested_categories": "perfumes, skincare", # This field can be added in the future
                         "new_product_name": new_product_name,
                         "discount_amount": discount_amount,
                         "promo_code": promo_code,
@@ -127,4 +118,7 @@ else:
                     with st.expander(f"Email for User ID: {user_profile['user_id']} (RFM: {user_profile['RFM_Segment']}, Behavior: {user_profile['Behavioral_Segment']})"):
                         st.markdown(email_text)
 
-            st.success("Generation of demo emails is complete!")
+            st.success("✅ Generation complete!")
+
+    except Exception as e:
+        st.error(f"🚫 Failed to load the dataset. Error: {e}")
