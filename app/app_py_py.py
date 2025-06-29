@@ -120,3 +120,5 @@ insights =  "promising / active shoppers": [
 
         for tip in insights.get(segment, ["❓ Нет рекомендаций для выбранного сегмента."]):
             st.markdown(f"- {tip}")
+st.markdown("Want to launch a full email campaign?")
+st.markdown("[➡️ Go to Email Generator App](https://your-streamlit-email-app-link)")
