@@ -11,11 +11,29 @@ Original file is located at
 
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.express as px
 
+# ========== Custom CSS ==========
+st.markdown("""
+    <style>
+        .main { background-color: #f9f9f9; }
+        h1 { color: #3F8CFF; }
+        .stMetricValue { color: #1a1a1a; font-weight: bold; }
+        .stTabs [data-baseweb="tab-list"] {
+            background-color: #f0f2f6;
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# ========== Заголовок ==========
+st.markdown("<h1 style='text-align: center;'>📉 Customer Retention & Churn Dashboard</h1>", unsafe_allow_html=True)
+
+
 # === HEADER ===
-st.title("📉 Customer Retention & Churn Dashboard")
+st.markdown("<h1 style='text-align: center; color: #3F8CFF;'>📉 Customer Retention & Churn Dashboard</h1>", unsafe_allow_html=True)
+
 
 # === Data Loading from Google Drive (if the file is shared publicly) ===
 csv_url = "https://drive.google.com/uc?id=1cCxHQriyEPCPcZ35gcuxpJRUSU7mKopI"
@@ -29,15 +47,17 @@ df = load_data()
 
 # === Overall Statistics ===
 st.subheader("📊 Overview")
-col1, col2, col3 = st.columns(3)
-col1.metric("Total Users", f"{len(df):,}")
-col2.metric("Average Activity Probability", f"{df['predicted_activity_proba'].mean():.2f}")
-col3.metric("Churn Rate", f"{1 - df['predicted_activity_binary'].mean():.2%}")
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("👥 Users", f"{len(df):,}")
+col2.metric("📈 Avg Activity", f"{df['predicted_activity_proba'].mean():.2f}")
+col3.metric("❌ Churn Rate", f"{1 - df['predicted_activity_binary'].mean():.2%}")
+col4.metric("💸 Total Spend", f"${df['total_spend_sum_3M'].sum():,.2f}")
+
 
 # === Filters ===
 st.sidebar.header("🔍 Filters")
-segment = st.sidebar.selectbox("Behavioral Segment", ["All"] + df['Behavioral_Segment'].unique().tolist())
-customer_type = st.sidebar.selectbox("Customer Type", ["All"] + df['customer_type'].unique().tolist())
+segment = st.sidebar.selectbox("Behavioral Segment", ["All"] + sorted(df['Behavioral_Segment'].dropna().unique().tolist()))
+customer_type = st.sidebar.selectbox("Customer Type", ["All"] + sorted(df['customer_type'].dropna().unique().tolist()))
 
 filtered_df = df.copy()
 if segment != "All":
@@ -45,30 +65,67 @@ if segment != "All":
 if customer_type != "All":
     filtered_df = filtered_df[filtered_df['customer_type'] == customer_type]
 
-# === Churn vs Activity Chart ===
-st.subheader("📈 Activity Probability Distribution")
-fig = px.histogram(filtered_df, x="predicted_activity_proba", nbins=30,
-                   color="predicted_activity_binary", barmode='overlay',
-                   labels={"predicted_activity_binary": "Active"})
-st.plotly_chart(fig, use_container_width=True)
+# ========== Tabs ==========
+tab1, tab2 = st.tabs(["📊 Overview", "🧠 AI Recommendations"])
 
-# === Users Table ===
-st.subheader("👥 Users")
-st.dataframe(filtered_df[['customer_type', 'Behavioral_Segment', 'RFM_Segment',
-                          'predicted_activity_proba', 'predicted_activity_binary',
-                          'total_spend_sum_last_3M', 'Recency', 'Frequency', 'Monetary']].sort_values(
-                          by='predicted_activity_proba', ascending=False).head(20))
+# ========== Tab 1: Overview ==========
+with tab1:
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("👥 Users", f"{len(filtered_df):,}")
+    col2.metric("📈 Avg Activity", f"{filtered_df['predicted_activity_proba'].mean():.2f}")
+    col3.metric("❌ Churn Rate", f"{1 - filtered_df['predicted_activity_binary'].mean():.2%}")
+    col4.metric("💸 Total Spend", f"${filtered_df['total_spend_sum_3M'].sum():,.2f}")
 
-# === User Details ===
-st.subheader("🔎 Detailed User Profile")
-user_id = st.selectbox("Select user_id", df['Unnamed: 0'].unique())
-user = df[df['Unnamed: 0'] == user_id].squeeze()
+    st.subheader("📈 Distribution of Predicted Activity")
+    fig1 = px.histogram(filtered_df, 
+                        x="predicted_activity_proba", 
+                        color="predicted_activity_binary",
+                        color_discrete_map={1: "green", 0: "red"},
+                        nbins=30,
+                        barmode="overlay",
+                        labels={"predicted_activity_binary": "Active?"})
+    st.plotly_chart(fig1, use_container_width=True)
 
-st.markdown(f"""
-- **Customer Type**: {user['customer_type']}
-- **Segment**: {user['Behavioral_Segment']}
-- **RFM Segment**: {user['RFM_Segment']}
-- **Activity Probability**: `{user['predicted_activity_proba']:.2f}`
-- **Purchases in last 3 months**: `{user['num_purchases_sum_last_3M']}`
-- **Spend**: `${user['total_spend_sum_last_3M']:.2f}`
-""")
+    st.subheader("📌 Retention Rate by Segment")
+    seg_chart = (
+        filtered_df.groupby("Behavioral_Segment")["predicted_activity_binary"]
+        .mean().reset_index().rename(columns={"predicted_activity_binary": "Retention Rate"})
+    )
+    fig2 = px.bar(seg_chart, x="Behavioral_Segment", y="Retention Rate", color="Behavioral_Segment")
+    st.plotly_chart(fig2, use_container_width=True)
+
+# ========== Tab 2: AI Recommendations ==========
+with tab2:
+    st.markdown("### 🧠 AI Agent Recommendations")
+
+    if segment == "All":
+        st.info("Please select a specific Behavioral Segment to generate recommendations.")
+    else:
+        st.success(f"Segment selected: **{segment}**")
+
+        # 🔮 Пример рекомендательной логики:
+        insights = {
+            "promising / active shoppers": [
+                "👉 Отправьте им email с персональными скидками.",
+                "✅ Предложите программу лояльности.",
+                "🧲 Используйте ретаргетинг в соцсетях."
+            ],
+            "newcomers / casual visitors": [
+                "📢 Проведите welcome-кампанию с бонусами.",
+                "🔍 Поддержите онбординг с подсказками и FAQ.",
+                "📬 Напомните им о незавершённых действиях (корзина, просмотр)."
+            ],
+            "at risk": [
+                "🔥 Отправьте специальное предложение 'только сегодня'.",
+                "🕵️ Проверьте каналы взаимодействия — возможно, они устарели.",
+                "📉 Посмотрите, когда они последний раз были активны, и предложите бонус."
+            ],
+            "can't lose them": [
+                "🎁 Подарок за лояльность или повышение уровня.",
+                "📣 Участвуйте с ними в закрытых распродажах.",
+                "🤝 Сделайте опрос удовлетворённости — покажите заботу."
+            ]
+        }
+
+        for tip in insights.get(segment, ["❓ Нет рекомендаций для выбранного сегмента."]):
+            st.markdown(f"- {tip}")
