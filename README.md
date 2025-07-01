@@ -86,7 +86,7 @@ You can test the project in Streamlit here:
 [streamlit-link-English](https://92ojbikbpkzxyjzjcymybp.streamlit.app/)
 
 🔗 **App Version 2 (Ukrainian version):**  
-[streamlit-link-Churn/Retention Predictions](**https://vsfn4vshmfdnzcc27mvtzb.streamlit.app**)
+[streamlit-link-Churn/Retention Predictions](https://vsfn4vshmfdnzcc27mvtzb.streamlit.app)
 
 ---
 
