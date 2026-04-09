@@ -3,6 +3,23 @@ import pandas as pd
 from mistralai.client import MistralClient
 from mistralai.models.chat_completion import ChatMessage
 
+import time
+import random
+
+def generate_email_mistral_with_retry(_client, customer_data, max_retries=3, model_name="mistral-small-latest"):
+    for attempt in range(max_retries):
+        try:
+            filled_prompt = PROMPT_TEMPLATE.format(**customer_data)
+            messages = [ChatMessage(role="user", content=filled_prompt)]
+            chat_response = _client.chat(model=model_name, messages=messages, temperature=0.7)
+            return chat_response.choices[0].message.content
+        except Exception as e:
+            if "Service tier capacity exceeded" in str(e) and attempt < max_retries - 1:
+                wait_time = (2 ** attempt) + random.uniform(0, 1)
+                time.sleep(wait_time)
+            else:
+                raise
+
 # --- CONFIGURATION ---
 PROMPT_TEMPLATE = """
 You are an experienced marketer and a talented copywriter for our cosmetics and perfumery online store. Your task is to generate a personalized, warm, and friendly email for our customer. Avoid clichés and overly "robotic" phrases.
